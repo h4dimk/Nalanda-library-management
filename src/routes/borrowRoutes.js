@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 // Borrow Book
-router.post("/borrow", authenticate(["Member"]), borrowBook);
+router.post("/", authenticate(["Member"]), borrowBook);
 
 // Return Book
 router.post("/return", authenticate(["Member"]), returnBook);

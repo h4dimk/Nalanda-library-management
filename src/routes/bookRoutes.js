@@ -14,6 +14,6 @@ router.put("/update/:id", authenticate(["Admin"]), updateBook);
 router.delete("/remove/:id", authenticate(["Admin"]), removeBook);
 
 // List Books (All Users)
-router.get("/books", listBooks);
+router.get("/", listBooks);
 
 export default router;
