@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import connectDB from "./db.js";
 import dotenv from "dotenv";
 
@@ -12,6 +13,7 @@ connectDB();
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 // Set up API routes
 app.use("/api/users", userRoutes);
