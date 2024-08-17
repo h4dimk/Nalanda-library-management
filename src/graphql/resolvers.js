@@ -8,12 +8,20 @@ export const resolvers = {
   // Query resolvers
   Query: {
     getBooks: async () => await Book.find(),
-    
+
     getBook: async (_, { id }) => await Book.findById(id),
 
-    getUsers: async () => await User.find(),
+    getUsers: async (_, __, { req }) => {
+      if (!req.user || req.user.role !== "Admin") {
+        throw new Error("Unauthorized");
+      }
+      return await User.find();
+    },
 
-    getUser: async (_, { id }) => {
+    getUser: async (_, { id }, { req }) => {
+      if (!req.user) {
+        throw new Error("Unauthorized");
+      }
       const user = await User.findById(id).populate("borrowedBooks");
       return user;
     },
@@ -44,13 +52,18 @@ export const resolvers = {
       return mostBorrowed.map((borrow) => borrow.book);
     },
   },
-  
+
   // Mutation resolvers
   Mutation: {
     addBook: async (
       _,
       { title, author, ISBN, publicationDate, genre, copiesAvailable }
     ) => {
+      // Check for Admin role
+      if (!req.user || req.user.role !== "Admin") {
+        throw new Error("Unauthorized");
+      }
+
       const book = new Book({
         title,
         author,
@@ -67,6 +80,11 @@ export const resolvers = {
       _,
       { id, title, author, ISBN, publicationDate, genre, copiesAvailable }
     ) => {
+      // Check for Admin role
+      if (!req.user || req.user.role !== "Admin") {
+        throw new Error("Unauthorized");
+      }
+
       const book = await Book.findByIdAndUpdate(
         id,
         { title, author, ISBN, publicationDate, genre, copiesAvailable },
@@ -76,11 +94,17 @@ export const resolvers = {
     },
 
     removeBook: async (_, { id }) => {
+      // Check for Admin role
+      if (!req.user || req.user.role !== "Admin") {
+        throw new Error("Unauthorized");
+      }
+
       await Book.findByIdAndDelete(id);
       return "Book deleted";
     },
 
     borrowBook: async (_, { bookId }, { req }) => {
+      // Check for Admin role
       if (!req.user) {
         throw new Error("Unauthorized");
       }
@@ -105,6 +129,11 @@ export const resolvers = {
     },
 
     returnBook: async (_, { borrowId }) => {
+      // Check for Admin role
+      if (!req.user) {
+        throw new Error("Unauthorized");
+      }
+
       const borrow = await Borrow.findById(borrowId);
       if (!borrow) {
         throw new Error("Borrow record not found");
