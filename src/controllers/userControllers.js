@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
+// User signup
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
@@ -29,6 +30,7 @@ export const signup = async (req, res) => {
   }
 };
 
+// User signin
 export const signin = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {

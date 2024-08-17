@@ -63,8 +63,8 @@ export const typeDefs = gql`
 
     removeBook(id: ID!): String
 
-    borrowBook(bookId: ID!): Borrow
-    returnBook(borrowId: ID!): Borrow
+    borrowBook(bookId: ID!): String
+    returnBook(borrowId: ID!): String
 
     signup(name: String!, email: String!, password: String!): User
     signin(email: String!, password: String!): AuthPayload

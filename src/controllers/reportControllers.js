@@ -1,7 +1,7 @@
 import Book from "../models/Book.js";
 import Borrow from "../models/Borrow.js";
-import User from "../models/User.js";
 
+// Get the most borrowed books
 export const mostBorrowedBooks = async (req, res) => {
   try {
     const mostBorrowed = await Borrow.aggregate([
@@ -24,6 +24,7 @@ export const mostBorrowedBooks = async (req, res) => {
   }
 };
 
+// Get the most active members
 export const activeMembers = async (req, res) => {
   try {
     const activeMembers = await Borrow.aggregate([
@@ -46,6 +47,7 @@ export const activeMembers = async (req, res) => {
   }
 };
 
+// Get available books with their count
 export const availableBooks = async (req, res) => {
   try {
     const availability = await Book.find({}, "title copiesAvailable");

@@ -5,21 +5,27 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const resolvers = {
+  // Query resolvers
   Query: {
     getBooks: async () => await Book.find(),
+    
     getBook: async (_, { id }) => await Book.findById(id),
+
     getUsers: async () => await User.find(),
+
     getUser: async (_, { id }) => {
       const user = await User.findById(id).populate("borrowedBooks");
       return user;
     },
+
     borrowHistory: async (_, __, { req }) => {
       if (!req.user) {
         throw new Error("Unauthorized");
       }
-      const userId = req.user.id; // Use the authenticated user's ID
+      const userId = req.user.id;
       return await Borrow.find({ userId }).populate("bookId");
     },
+
     mostBorrowedBooks: async () => {
       const mostBorrowed = await Borrow.aggregate([
         { $group: { _id: "$bookId", count: { $sum: 1 } } },
@@ -38,6 +44,8 @@ export const resolvers = {
       return mostBorrowed.map((borrow) => borrow.book);
     },
   },
+  
+  // Mutation resolvers
   Mutation: {
     addBook: async (
       _,
@@ -54,6 +62,7 @@ export const resolvers = {
       await book.save();
       return book;
     },
+
     updateBook: async (
       _,
       { id, title, author, ISBN, publicationDate, genre, copiesAvailable }
@@ -65,10 +74,12 @@ export const resolvers = {
       );
       return book;
     },
+
     removeBook: async (_, { id }) => {
       await Book.findByIdAndDelete(id);
       return "Book deleted";
     },
+
     borrowBook: async (_, { bookId }, { req }) => {
       if (!req.user) {
         throw new Error("Unauthorized");
@@ -90,8 +101,9 @@ export const resolvers = {
       user.borrowedBooks.push(bookId);
       await borrow.save();
 
-      return borrow;
+      return "Book borrowed";
     },
+
     returnBook: async (_, { borrowId }) => {
       const borrow = await Borrow.findById(borrowId);
       if (!borrow) {
@@ -105,14 +117,16 @@ export const resolvers = {
       await borrow.save();
       book.copiesAvailable += 1;
       await book.save();
-      return borrow;
+      return "Book returned";
     },
+
     signup: async (_, { name, email, password }) => {
       const hashedPassword = await bcrypt.hash(password, 12);
       const user = new User({ name, email, password: hashedPassword });
       await user.save();
       return user;
     },
+
     signin: async (_, { email, password }) => {
       const user = await User.findOne({ email });
       if (!user || !(await bcrypt.compare(password, user.password))) {

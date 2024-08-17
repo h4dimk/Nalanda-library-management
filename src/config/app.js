@@ -7,6 +7,7 @@ import connectDB from "./db.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
+// Importing route modules
 import userRoutes from "../routes/userRoutes.js";
 import bookRoutes from "../routes/bookRoutes.js";
 import borrowRoutes from "../routes/borrowRoutes.js";
@@ -16,15 +17,18 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-// Set up API routes
+// Set up REST API routes
 app.use("/api/users", userRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/borrow", borrowRoutes);
 app.use("/api/reports", reportRoutes);
 
+// Context for GraphQL server
 const context = ({ req }) => {
   const token = req.cookies?.access_token || "";
   if (token) {
@@ -46,6 +50,7 @@ const server = new ApolloServer({
   context,
 });
 
+// Start the server
 const startServer = async () => {
   try {
     await server.start();
