@@ -1,0 +1,33 @@
+Nalanda Library Management System
+
+Nalanda is a library management system that allows users to borrow and return books, view borrowing history, and manage library resources. The system supports both REST and GraphQL APIs and implements authentication and authorization using JWT.
+
+Features
+
+User Authentication: Sign up and sign in users with JWT-based authentication.
+Library Management: CRUD operations for books.
+Borrowing System: Allows users to borrow and return books, while tracking the borrowing history.
+Most Borrowed Books: Retrieve the most borrowed books using MongoDB aggregations.
+GraphQL API: Supports queries and mutations for managing books, users, and borrowing records.
+
+Technologies Used
+
+Backend: Node.js, Express.js, Apollo Server for GraphQL.
+Database: MongoDB, Mongoose.
+Authentication: JWT (JSON Web Tokens).
+API Testing: Postman for REST and GraphQL testing.
+
+
+API Endpoints
+
+REST API
+
+Method	Endpoint	            Description
+POST	/api/users/signup	    Sign up a new user
+POST	/api/users/signin	    Sign in an existing user
+GET	    /api/books	            Get all books
+POST	/api/books/add	        Add a new book
+PUT	    /api/books/:id	        Update a book by ID
+DELETE	/api/books/:id	        Delete a book by ID
+POST	/api/borrow	            Borrow a book
+PUT	    /api/borrow/return/:id	Return a borrowed book
