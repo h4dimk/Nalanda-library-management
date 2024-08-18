@@ -57,28 +57,33 @@ export const resolvers = {
   Mutation: {
     addBook: async (
       _,
-      { title, author, ISBN, publicationDate, genre, copiesAvailable }
+      { title, author, ISBN, publicationDate, genre, copiesAvailable },
+      { req }
     ) => {
       // Check for Admin role
       if (!req.user || req.user.role !== "Admin") {
         throw new Error("Unauthorized");
       }
-
-      const book = new Book({
-        title,
-        author,
-        ISBN,
-        publicationDate,
-        genre,
-        copiesAvailable,
-      });
-      await book.save();
-      return book;
+      try {
+        const book = new Book({
+          title,
+          author,
+          ISBN,
+          publicationDate,
+          genre,
+          copiesAvailable,
+        });
+        await book.save();
+        return book;
+      } catch (error) {
+        throw new Error(`Error adding book: ${error.message}`);
+      }
     },
 
     updateBook: async (
       _,
-      { id, title, author, ISBN, publicationDate, genre, copiesAvailable }
+      { id, title, author, ISBN, publicationDate, genre, copiesAvailable },
+      { req }
     ) => {
       // Check for Admin role
       if (!req.user || req.user.role !== "Admin") {
@@ -93,7 +98,7 @@ export const resolvers = {
       return book;
     },
 
-    removeBook: async (_, { id }) => {
+    removeBook: async (_, { id }, { req }) => {
       // Check for Admin role
       if (!req.user || req.user.role !== "Admin") {
         throw new Error("Unauthorized");
@@ -104,7 +109,6 @@ export const resolvers = {
     },
 
     borrowBook: async (_, { bookId }, { req }) => {
-      // Check for Admin role
       if (!req.user) {
         throw new Error("Unauthorized");
       }
@@ -128,8 +132,7 @@ export const resolvers = {
       return "Book borrowed";
     },
 
-    returnBook: async (_, { borrowId }) => {
-      // Check for Admin role
+    returnBook: async (_, { borrowId }, { req }) => {
       if (!req.user) {
         throw new Error("Unauthorized");
       }
