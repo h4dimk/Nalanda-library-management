@@ -127,6 +127,8 @@ export const resolvers = {
       book.copiesAvailable -= 1;
       await book.save();
       user.borrowedBooks.push(bookId);
+      await user.save();
+
       await borrow.save();
 
       return "Book borrowed";
